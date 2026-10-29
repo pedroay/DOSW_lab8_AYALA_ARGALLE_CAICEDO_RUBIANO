@@ -1,6 +1,7 @@
 package edu.eci.dosw.oficioya.controller;
 
 import edu.eci.dosw.oficioya.dto.ApiError;
+import edu.eci.dosw.oficioya.exception.CredencialesInvalidasException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -28,6 +29,17 @@ public class ApiExceptionHandler {
         return ApiError.of(
             HttpStatus.CONFLICT.value(),
             "Conflict",
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+    }
+
+    @ExceptionHandler(CredencialesInvalidasException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiError handleCredencialesInvalidasException(CredencialesInvalidasException ex, HttpServletRequest request) {
+        return ApiError.of(
+            HttpStatus.UNAUTHORIZED.value(),
+            "Unauthorized",
             ex.getMessage(),
             request.getRequestURI()
         );
