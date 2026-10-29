@@ -21,4 +21,14 @@ public class UsarioResponseDTO{
     public void setRol(String rol) { this.rol = rol; }
     public void setOficioPrincipal(String oficioPrincipal) { this.oficioPrincipal = oficioPrincipal; }
     public void setZona(String zona) { this.zona = zona; }
+
+    public Long getId() { return id; }
+    public String getNombre() { return nombre; }
+    public String getCorreo() { return correo; }
+    public String getTelefono() { return telefono; }
+    public String getRol() { return rol; }
+    public String getOficioPrincipal() { return oficioPrincipal; }
+    public String getZona() { return zona; }
+
+    
 }

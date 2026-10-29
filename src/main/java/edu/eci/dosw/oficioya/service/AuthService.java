@@ -1,4 +1,4 @@
-package edu.eci.dosw.service;
+package edu.eci.dosw.oficioya.service;
 
 import edu.eci.dosw.oficioya.dto.RegistroRequestDto;
 import edu.eci.dosw.oficioya.dto.UsarioResponseDTO;
@@ -23,7 +23,6 @@ public class AuthService {
         String correoNormalizado = req.getCorreo().trim().toLowerCase();
 
         if (usuarioRepository.existsByCorreo(correoNormalizado)) {
-            // Deberás capturar esta excepción en tu ApiExceptionHandler para retornar 409
             throw new IllegalArgumentException("El correo ya está en uso"); 
         }
 
@@ -31,7 +30,7 @@ public class AuthService {
         u.setNombre(req.getNombre());
         u.setCorreo(correoNormalizado);
         u.setTelefono(req.getTelefono());
-        u.setPasswordHash(passwordEncoder.encode(req.getPassword())); // Genera el hash BCrypt
+        u.setPasswordHash(passwordEncoder.encode(req.getPassword()));
         u.setRol(Rol.valueOf(req.getRol())); 
         u.setOficioPrincipal(req.getOficioPrincipal());
         u.setZona(req.getZona());
