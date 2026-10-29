@@ -1,5 +1,7 @@
 package edu.eci.dosw.oficioya.controller;
 
+import edu.eci.dosw.oficioya.dto.LoginRequestDto;
+import edu.eci.dosw.oficioya.dto.LoginResponseDto;
 import edu.eci.dosw.oficioya.dto.RegistroRequestDto;
 import edu.eci.dosw.oficioya.dto.UsarioResponseDTO;
 import edu.eci.dosw.oficioya.service.AuthService;
@@ -21,5 +23,10 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     public UsarioResponseDTO registrar(@Valid @RequestBody RegistroRequestDto request) {
         return authService.registrar(request);
+    }
+
+    @PostMapping("/login")
+    public LoginResponseDto login(@Valid @RequestBody LoginRequestDto request) {
+        return authService.login(request);
     }
 }

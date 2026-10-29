@@ -1,10 +1,14 @@
 package edu.eci.dosw.oficioya.service;
 
+import edu.eci.dosw.oficioya.dto.LoginRequestDto;
+import edu.eci.dosw.oficioya.dto.LoginResponseDto;
 import edu.eci.dosw.oficioya.dto.RegistroRequestDto;
 import edu.eci.dosw.oficioya.dto.UsarioResponseDTO;
 import edu.eci.dosw.oficioya.entity.Rol;
 import edu.eci.dosw.oficioya.entity.Usuario;
+import edu.eci.dosw.oficioya.exception.CredencialesInvalidasException;
 import edu.eci.dosw.oficioya.repository.UsuarioRepository;
+import edu.eci.dosw.oficioya.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +17,12 @@ public class AuthService {
     
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public AuthService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     public UsarioResponseDTO registrar(RegistroRequestDto req) {
@@ -47,5 +53,16 @@ public class AuthService {
         response.setZona(guardado.getZona());
         
         return response;
+    }
+
+    public LoginResponseDto login(LoginRequestDto req) {
+        String correoNormalizado = req.getCorreo() != null ? req.getCorreo().trim().toLowerCase() : "";
+
+        Usuario u = usuarioRepository.findByCorreo(correoNormalizado)
+                .filter(x -> passwordEncoder.matches(req.getPassword(), x.getPasswordHash()))
+                .orElseThrow(CredencialesInvalidasException::new);
+
+        String token = jwtService.generar(u.getCorreo(), u.getRol().name());
+        return new LoginResponseDto("Bearer", token, jwtService.getTtlSeconds());
     }
 }
