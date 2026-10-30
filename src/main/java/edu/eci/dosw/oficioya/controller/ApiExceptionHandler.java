@@ -2,13 +2,14 @@ package edu.eci.dosw.oficioya.controller;
 
 import edu.eci.dosw.oficioya.dto.ApiError;
 import edu.eci.dosw.oficioya.exception.CredencialesInvalidasException;
+import edu.eci.dosw.oficioya.exception.EstadoInvalidoException;
+import edu.eci.dosw.oficioya.exception.RecursoNoEncontradoException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import edu.eci.dosw.oficioya.exception.RecursoNoEncontradoException;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
@@ -54,4 +55,13 @@ public class ApiExceptionHandler {
                 request.getRequestURI());
     }
 
+    @ExceptionHandler(EstadoInvalidoException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handleEstadoInvalido(EstadoInvalidoException ex, HttpServletRequest request) {
+        return ApiError.of(
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                ex.getMessage(),
+                request.getRequestURI());
+    }
 }
